@@ -1,25 +1,31 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>My Rust + Webpack project!</title>
-
+<head>
+    <title>Self-Organized Critical Forest-Fire Model</title>
     <style>
-      body {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: block;
+            margin: 0 auto;
+            width: 1000px;
+            text-align: center;
+        }
+        canvas {
+            display: block;
+            margin: 40px auto;
+        }
     </style>
-  </head>
-  <body>
-    <pre id="forest-canvas"></pre>
-    <script src="index.js"></script>
-  </body>
+</head>
+<body>
+    <div class="container">
+        <h1>Self-Organized Critical Forest-Fire Model</h1>
+        <h2>
+            As Proposed in B. Drossel and F. Schwabl's <a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.69.1629" target="_blank">1992 Paper</a>
+        </h2>
+        <canvas id="forest-canvas"></canvas>
+        <script src="./index.js"></script>
+    </div>
+</body>
 </html>

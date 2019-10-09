@@ -111,7 +111,6 @@ impl Forest {
             (otherwise, _, _, _) => otherwise,
           };
 
-          console::log_1(&JsValue::from_str(&next_state.to_string()));
           next[idx] = next_state;
         }
       }
