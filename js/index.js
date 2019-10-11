@@ -21,6 +21,8 @@
     const renderLoop = () => {
       forest.tick();
 
+      console.log(forest.light());
+
       const patchesPtr = forest.patches();
       const patches = new Uint8Array(memory.buffer, patchesPtr, WIDTH * HEIGHT);
       drawPatches(patches, context2d);

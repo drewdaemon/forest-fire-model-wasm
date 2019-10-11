@@ -1,6 +1,8 @@
+extern crate rand;
+
 use wasm_bindgen::prelude::*;
 use web_sys::console;
-use rand::Rng;
+use rand::distributions::{Binomial, Distribution};
 use std::fmt;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
@@ -32,8 +34,8 @@ impl fmt::Display for State {
 pub struct Forest {
     width: u32,
     height: u32,
-    p: f32,
-    f: f32,
+    p: f64,
+    f: f64,
     patches: Vec<State>,
 }
 
@@ -80,8 +82,6 @@ impl Forest {
     }
 
     fn lightning(&self) -> bool {
-      // let mut rng = rand::thread_rng();
-      // rng.gen_range(0.0, 1.0) < self.f
       true
     }
 
@@ -89,6 +89,11 @@ impl Forest {
       // let mut rng = rand::thread_rng();
       // rng.gen_range(0.0, 1.0) < self.p
       true
+    }
+
+    pub fn light(&mut self) -> u64 {
+      let bin = Binomial::new(1, self.f);
+      bin.sample(&mut rand::thread_rng())
     }
 
     pub fn tick(&mut self) {
@@ -118,7 +123,7 @@ impl Forest {
       self.patches = next;
     }
 
-    pub fn new(width: u32, height: u32, p: f32, f: f32) -> Forest {
+    pub fn new(width: u32, height: u32, p: f64, f: f64) -> Forest {
         let patches = (0..width * height)
             .map(|_| State::Tree)
             .collect();
