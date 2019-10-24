@@ -6,8 +6,8 @@
       [module.State.Burning]: '#ff2b23',
       [module.State.Empty]: '#000000'
   }
-  const WIDTH = 1000;
-  const HEIGHT = 600;
+  const WIDTH = 100;
+  const HEIGHT = 100;
 
   function init () {
     const forest = module.Forest.new(WIDTH, HEIGHT, .02, .00001);
@@ -20,8 +20,6 @@
 
     const renderLoop = () => {
       forest.tick();
-
-      console.log(forest.light());
 
       const patchesPtr = forest.patches();
       const patches = new Uint8Array(memory.buffer, patchesPtr, WIDTH * HEIGHT);

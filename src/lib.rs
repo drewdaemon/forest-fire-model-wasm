@@ -2,7 +2,7 @@ extern crate rand;
 
 use wasm_bindgen::prelude::*;
 use web_sys::console;
-use rand::distributions::{Binomial, Distribution};
+use rand::prelude::*;
 use std::fmt;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
@@ -82,18 +82,13 @@ impl Forest {
     }
 
     fn lightning(&self) -> bool {
-      true
+      let y: f64 = rand::thread_rng().gen();
+      y < self.f
     }
 
     fn regenerate(&self) -> bool {
-      // let mut rng = rand::thread_rng();
-      // rng.gen_range(0.0, 1.0) < self.p
-      true
-    }
-
-    pub fn light(&mut self) -> u64 {
-      let bin = Binomial::new(1, self.f);
-      bin.sample(&mut rand::thread_rng())
+      let y: f64 = rand::thread_rng().gen();
+      y < self.p
     }
 
     pub fn tick(&mut self) {
