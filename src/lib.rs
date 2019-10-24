@@ -63,20 +63,58 @@ impl Forest {
         (row * self.width + column) as usize
     }
 
-    fn has_burning_neighbor(&self, row: u32, column: u32) -> bool {
-        for delta_row in [self.height - 1, 0, 1].iter().cloned() {
-            for delta_col in [self.width - 1, 0, 1].iter().cloned() {
-                if delta_row == 0 && delta_col == 0 {
-                    continue;
-                }
+    fn get_patch(&self, row: u32, column: u32) -> State {
+      self.patches[self.get_index(row, column)]
+    }
 
-                let neighbor_row = (row + delta_row) % self.height;
-                let neighbor_col = (column + delta_col) % self.width;
-                let idx = self.get_index(neighbor_row, neighbor_col);
-                if self.patches[idx] == State::Burning {
-                  return true;
-                }
+    fn has_burning_neighbor(&self, row: u32, column: u32) -> bool {
+        if column > 0 {
+            // W
+            if self.get_patch(row, column-1) == State::Burning {
+              return true;
             }
+            if row > 0 {
+              // NW
+              if self.get_patch(row-1, column-1) == State::Burning {
+                return true;
+              }
+            }
+            if row < self.height-1 {
+              // SW
+              if self.get_patch(row+1, column-1) == State::Burning {
+                return true;
+              }
+            }
+        }
+        if column < self.width-1 {
+            // E = forest[i+1][j];
+            if self.get_patch(row, column+1) == State::Burning {
+              return true;
+            }
+            if row > 0 {
+                // NE = forest[i+1][j-1];
+              if self.get_patch(row-1, column+1) == State::Burning {
+                return true;
+              }
+            }
+            if row < self.height-1 {
+                // SE = forest[i+1][j+1];
+              if self.get_patch(row+1, column+1) == State::Burning {
+                return true;
+              }
+            }
+        }
+        if row < self.height-1 {
+          // S = forest[i][j+1];
+          if self.get_patch(row+1, column) == State::Burning {
+            return true;
+          }
+        }
+        if row > 0 {
+            // N = forest[i][j-1];
+          if self.get_patch(row-1, column) == State::Burning {
+            return true;
+          }
         }
         false
     }
@@ -98,20 +136,24 @@ impl Forest {
         for col in 0..self.width {
           let idx = self.get_index(row, col);
           let patch_state = self.patches[idx];
-          let burning_neighbor = self.has_burning_neighbor(row, col);
-          let lightning = self.lightning();
-          let regenerate = self.regenerate();
 
-
-          let next_state = match (patch_state, burning_neighbor, lightning, regenerate) {
-            (State::Tree, _, true, _) => State::Burning,
-            (State::Tree, true, _, _) => State::Burning,
-            (State::Burning, _, _, _) => State::Empty,
-            (State::Empty, _, _, true) => State::Tree,
-            (otherwise, _, _, _) => otherwise,
-          };
-
-          next[idx] = next_state;
+          match patch_state {
+            State::Tree => {
+              if self.has_burning_neighbor(row, col) || self.lightning() {
+                next[idx] = State::Burning;
+              } else {
+                next[idx] = State::Tree;
+              }
+            }
+            State::Burning => { next[idx] = State::Empty; }
+            State::Empty => {
+              if self.regenerate() {
+                next[idx] = State::Tree;
+              } else {
+                next[idx] = State::Empty;
+              }
+            }
+          }
         }
       }
 

@@ -6,8 +6,8 @@
       [module.State.Burning]: '#ff2b23',
       [module.State.Empty]: '#000000'
   }
-  const WIDTH = 100;
-  const HEIGHT = 100;
+  const WIDTH = 500;
+  const HEIGHT = 500;
 
   function init () {
     const forest = module.Forest.new(WIDTH, HEIGHT, .02, .00001);
@@ -19,11 +19,15 @@
     const context2d = canvas.getContext('2d');
 
     const renderLoop = () => {
+      console.time('tick');
       forest.tick();
+      console.timeEnd('tick');
 
       const patchesPtr = forest.patches();
       const patches = new Uint8Array(memory.buffer, patchesPtr, WIDTH * HEIGHT);
+      console.time('drawPatches');
       drawPatches(patches, context2d);
+      console.timeEnd('drawPatches');
 
       requestAnimationFrame(renderLoop);
     };
